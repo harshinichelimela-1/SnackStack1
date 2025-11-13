@@ -1,166 +1,100 @@
-from flask import Flask, request, jsonify
+from flask import Flask, render_template
 import mysql.connector
 
 app = Flask(__name__)
 
-# Database connection
-def get_db_connection():
-    return mysql.connector.connect(
-        host="localhost",
-        user="root",          # change this to your MySQL username
-        password="",          # change this to your MySQL password
-        database="food_order" # make sure this DB exists
-    )
+# ------------------------------------
+# Database Connection
+# ------------------------------------
+db = mysql.connector.connect(
+    host="localhost",
+    user="root",         # change if needed
+    password="root",     # your MySQL password
+    database="food_order"  # your database name (matches your SQL script)
+)
 
-# ---------------- USERS ----------------
-@app.route('/users', methods=['POST'])
-def add_user():
-    data = request.json
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    query = """INSERT INTO users (name, email, password, phone_no, address)
-               VALUES (%s, %s, %s, %s, %s)"""
-    cursor.execute(query, (data['name'], data['email'], data['password'], data['phone_no'], data['address']))
-    conn.commit()
+# ------------------------------------
+# Home Route
+# ------------------------------------
+@app.route('/')
+def home():
+    return """
+    <h2>Welcome!</h2>
+    <p><a href='/users'>View Users</a></p>
+    <p><a href='/restaurants'>View Restaurants</a></p>
+    <p><a href='/menu_items'>View Menu Items</a></p>
+    <p><a href='/orders'>View Orders</a></p>
+    <p><a href='/payments'>View Payments</a></p>
+    <p><a href='/delivery_staff'>View Delivery Staff</a></p>
+    """
+
+# ------------------------------------
+# Existing Routes
+# ------------------------------------
+@app.route('/menu_items')
+def show_menu_items():
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM menu_items;")
+    data = cursor.fetchall()
     cursor.close()
-    conn.close()
-    return jsonify({'message': 'User added successfully'})
+    return render_template('index.html', title="Menu Items", data=data)
 
-@app.route('/users', methods=['GET'])
-def get_users():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM users")
-    users = cursor.fetchall()
+@app.route('/ordered_items')
+def show_ordered_items():
+    # ⚠️ NOTE: ordered_items table doesn’t exist in your SQL script.
+    # We’ll skip or you can rename this route to /orders (below).
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM orders;")
+    data = cursor.fetchall()
     cursor.close()
-    conn.close()
-    return jsonify(users)
+    return render_template('index.html', title="Ordered Items", data=data)
 
-
-# ---------------- RESTAURANTS ----------------
-@app.route('/restaurants', methods=['POST'])
-def add_restaurant():
-    data = request.json
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    query = """INSERT INTO restaurants (name, owner_name, email, phone_no, address, cuisine_type)
-               VALUES (%s, %s, %s, %s, %s, %s)"""
-    cursor.execute(query, (data['name'], data['owner_name'], data['email'], data['phone_no'], data['address'], data['cuisine_type']))
-    conn.commit()
+@app.route('/delivery_staff')
+def show_delivery_staff():
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM delivery_staff;")
+    data = cursor.fetchall()
     cursor.close()
-    conn.close()
-    return jsonify({'message': 'Restaurant added successfully'})
+    return render_template('index.html', title="Delivery Staff", data=data)
 
-@app.route('/restaurants', methods=['GET'])
-def get_restaurants():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM restaurants")
-    restaurants = cursor.fetchall()
+# ------------------------------------
+# ✅ NEW ROUTES for missing tables
+# ------------------------------------
+
+@app.route('/users')
+def show_users():
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM users;")
+    data = cursor.fetchall()
     cursor.close()
-    conn.close()
-    return jsonify(restaurants)
+    return render_template('index.html', title="Users", data=data)
 
-
-# ---------------- MENU ITEMS ----------------
-@app.route('/menu_items', methods=['POST'])
-def add_menu_item():
-    data = request.json
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    query = """INSERT INTO menu_items (restaurant_id, name, description, category, price, available)
-               VALUES (%s, %s, %s, %s, %s, %s)"""
-    cursor.execute(query, (data['restaurant_id'], data['name'], data['description'], data['category'], data['price'], data['available']))
-    conn.commit()
+@app.route('/restaurants')
+def show_restaurants():
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM restaurants;")
+    data = cursor.fetchall()
     cursor.close()
-    conn.close()
-    return jsonify({'message': 'Menu item added successfully'})
+    return render_template('index.html', title="Restaurants", data=data)
 
-@app.route('/menu_items', methods=['GET'])
-def get_menu_items():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM menu_items")
-    items = cursor.fetchall()
+@app.route('/orders')
+def show_orders():
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM orders;")
+    data = cursor.fetchall()
     cursor.close()
-    conn.close()
-    return jsonify(items)
+    return render_template('index.html', title="Orders", data=data)
 
-
-# ---------------- ORDERS ----------------
-@app.route('/orders', methods=['POST'])
-def add_order():
-    data = request.json
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    query = """INSERT INTO orders (user_id, restaurant_id, item_id, total_amount, delivery_address, order_status)
-               VALUES (%s, %s, %s, %s, %s, %s)"""
-    cursor.execute(query, (data['user_id'], data['restaurant_id'], data['item_id'], data['total_amount'], data['delivery_address'], data['order_status']))
-    conn.commit()
+@app.route('/payments')
+def show_payments():
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM payments;")
+    data = cursor.fetchall()
     cursor.close()
-    conn.close()
-    return jsonify({'message': 'Order added successfully'})
+    return render_template('index.html', title="Payments", data=data)
 
-@app.route('/orders', methods=['GET'])
-def get_orders():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM orders")
-    orders = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return jsonify(orders)
-
-
-# ---------------- PAYMENTS ----------------
-@app.route('/payments', methods=['POST'])
-def add_payment():
-    data = request.json
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    query = """INSERT INTO payments (order_id, payment_status, payment_method, amount)
-               VALUES (%s, %s, %s, %s)"""
-    cursor.execute(query, (data['order_id'], data['payment_status'], data['payment_method'], data['amount']))
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return jsonify({'message': 'Payment added successfully'})
-
-@app.route('/payments', methods=['GET'])
-def get_payments():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM payments")
-    payments = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return jsonify(payments)
-
-
-# ---------------- DELIVERY STAFF ----------------
-@app.route('/delivery_staff', methods=['POST'])
-def add_delivery_staff():
-    data = request.json
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    query = """INSERT INTO delivery_staff (name, phone_no, vehicle_type, current_loc, assigned_order_id, status)
-               VALUES (%s, %s, %s, %s, %s, %s)"""
-    cursor.execute(query, (data['name'], data['phone_no'], data['vehicle_type'], data['current_loc'], data['assigned_order_id'], data['status']))
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return jsonify({'message': 'Delivery staff added successfully'})
-
-@app.route('/delivery_staff', methods=['GET'])
-def get_delivery_staff():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM delivery_staff")
-    staff = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return jsonify(staff)
-
-
+# ------------------------------------
+# Run App
+# ------------------------------------
 if __name__ == '__main__':
     app.run(debug=True)
