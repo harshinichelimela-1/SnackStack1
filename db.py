@@ -3,9 +3,7 @@ import mysql.connector
 
 app = Flask(__name__)
 
-# ------------------------------------
-# Database Connection
-# ------------------------------------
+
 db = mysql.connector.connect(
     host="localhost",
     user="root",         # change if needed
@@ -13,9 +11,7 @@ db = mysql.connector.connect(
     database="food_order"  # your database name (matches your SQL script)
 )
 
-# ------------------------------------
-# Home Route
-# ------------------------------------
+
 @app.route('/')
 def home():
     return """
@@ -28,9 +24,6 @@ def home():
     <p><a href='/delivery_staff'>View Delivery Staff</a></p>
     """
 
-# ------------------------------------
-# Existing Routes
-# ------------------------------------
 @app.route('/menu_items')
 def show_menu_items():
     cursor = db.cursor(dictionary=True)
@@ -41,8 +34,7 @@ def show_menu_items():
 
 @app.route('/ordered_items')
 def show_ordered_items():
-    # ⚠️ NOTE: ordered_items table doesn’t exist in your SQL script.
-    # We’ll skip or you can rename this route to /orders (below).
+   
     cursor = db.cursor(dictionary=True)
     cursor.execute("SELECT * FROM orders;")
     data = cursor.fetchall()
@@ -57,9 +49,6 @@ def show_delivery_staff():
     cursor.close()
     return render_template('index.html', title="Delivery Staff", data=data)
 
-# ------------------------------------
-# ✅ NEW ROUTES for missing tables
-# ------------------------------------
 
 @app.route('/users')
 def show_users():
@@ -93,8 +82,6 @@ def show_payments():
     cursor.close()
     return render_template('index.html', title="Payments", data=data)
 
-# ------------------------------------
-# Run App
-# ------------------------------------
+
 if __name__ == '__main__':
     app.run(debug=True)
