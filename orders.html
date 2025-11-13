@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Orders</title>
+    <style>
+        body { font-family: Arial; margin: 30px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+<h1>Orders</h1>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>User ID</th>
+        <th>Restaurant ID</th>
+        <th>Item ID</th>
+        <th>Total Amount</th>
+        <th>Delivery Address</th>
+        <th>Order Date</th>
+        <th>Status</th>
+        <th>Payment ID</th>
+    </tr>
+    {% for o in data %}
+    <tr>
+        <td>{{ o.order_id }}</td>
+        <td>{{ o.user_id }}</td>
+        <td>{{ o.restaurant_id }}</td>
+        <td>{{ o.item_id }}</td>
+        <td>{{ o.total_amount }}</td>
+        <td>{{ o.delivery_address }}</td>
+        <td>{{ o.order_date }}</td>
+        <td>{{ o.order_status }}</td>
+        <td>{{ o.payment_id }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<br><a href="/">Back to Home</a>
+</body>
+</html>

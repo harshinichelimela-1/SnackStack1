@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restaurants</title>
+    <style>
+        body { font-family: Arial; margin: 30px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+<h1>Restaurants Table</h1>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Owner</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Address</th>
+        <th>Cuisine Type</th>
+        <th>Created</th>
+        <th>Updated</th>
+    </tr>
+    {% for r in data %}
+    <tr>
+        <td>{{ r.restaurant_id }}</td>
+        <td>{{ r.name }}</td>
+        <td>{{ r.owner_name }}</td>
+        <td>{{ r.email }}</td>
+        <td>{{ r.phone_no }}</td>
+        <td>{{ r.address }}</td>
+        <td>{{ r.cuisine_type }}</td>
+        <td>{{ r.created_at }}</td>
+        <td>{{ r.updated_at }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<br><a href="/">Back to Home</a>
+</body>
+</html>
