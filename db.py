@@ -30,7 +30,7 @@ def show_menu_items():
     cursor.execute("SELECT * FROM menu_items;")
     data = cursor.fetchall()
     cursor.close()
-    return render_template('index.html', title="Menu Items", data=data)
+    return render_template('menu_items.html', data=data)
 
 @app.route('/ordered_items')
 def show_ordered_items():
@@ -39,7 +39,7 @@ def show_ordered_items():
     cursor.execute("SELECT * FROM orders;")
     data = cursor.fetchall()
     cursor.close()
-    return render_template('index.html', title="Ordered Items", data=data)
+    return render_template('ordered_items.html', data=data)
 
 @app.route('/delivery_staff')
 def show_delivery_staff():
@@ -47,7 +47,7 @@ def show_delivery_staff():
     cursor.execute("SELECT * FROM delivery_staff;")
     data = cursor.fetchall()
     cursor.close()
-    return render_template('index.html', title="Delivery Staff", data=data)
+    return render_template('delivery_staff.html', data=data)
 
 
 @app.route('/users')
@@ -56,7 +56,7 @@ def show_users():
     cursor.execute("SELECT * FROM users;")
     data = cursor.fetchall()
     cursor.close()
-    return render_template('index.html', title="Users", data=data)
+    return render_template('users.html', data=data)
 
 @app.route('/restaurants')
 def show_restaurants():
@@ -64,7 +64,7 @@ def show_restaurants():
     cursor.execute("SELECT * FROM restaurants;")
     data = cursor.fetchall()
     cursor.close()
-    return render_template('index.html', title="Restaurants", data=data)
+    return render_template('restaurants.html', data=data)
 
 @app.route('/orders')
 def show_orders():
@@ -72,7 +72,7 @@ def show_orders():
     cursor.execute("SELECT * FROM orders;")
     data = cursor.fetchall()
     cursor.close()
-    return render_template('index.html', title="Orders", data=data)
+    return render_template('orders.html', data=data)
 
 @app.route('/payments')
 def show_payments():
@@ -80,7 +80,7 @@ def show_payments():
     cursor.execute("SELECT * FROM payments;")
     data = cursor.fetchall()
     cursor.close()
-    return render_template('index.html', title="Payments", data=data)
+    return render_template('payments.html', data=data)
 
 
 if __name__ == '__main__':
